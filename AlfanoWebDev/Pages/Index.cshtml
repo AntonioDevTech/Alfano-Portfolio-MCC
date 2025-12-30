@@ -1,0 +1,621 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Alfano Tech Portfolio";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* =========================================
+                   CORE DESIGN SYSTEM & VARIABLES
+                   ========================================= */
+        :root {
+            /* Palette: MATRIX / HARDWARE GREEN THEME */
+            --bg-body: #050505; /* Pitch Black */
+            --bg-surface: #0f1110; /* Very Dark Grey */
+            --bg-accent: #1f2923; /* Dark Greenish Grey */
+            /* The "Illumination" Color */
+            --brand-primary: #00ff41; /* Cyberpunk/Terminal Green */
+            --brand-glow: rgba(0, 255, 65, 0.15);
+            /* Typography */
+            --text-heading: #ffffff;
+            --text-body: #e2e8f0;
+            /* Brand Identity Colors */
+            --brand-linkedin: #0077b5;
+            --brand-github: #ffffff;
+            --brand-github-bg: #181717;
+        }
+
+        /* Reset & Base Typography */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-heading);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: var(--text-heading);
+        }
+
+        p {
+            color: var(--text-body);
+        }
+
+        /* =========================================
+                   COMPONENT: CARDS & SECTIONS
+                   ========================================= */
+        .tech-section {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--bg-accent);
+        }
+
+        .card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--bg-accent);
+            color: var(--text-body);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            /* Green Gradient Text */
+            background: linear-gradient(to right, #ffffff, var(--brand-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =========================================
+                   COMPONENT: INTERACTIVE INFRASTRUCTURE GRID
+                   ========================================= */
+        .infra-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .infra-item {
+            background: var(--bg-surface);
+            padding: 2.5rem;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--bg-accent);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .infra-item:hover {
+                transform: translateY(-5px);
+                border-color: var(--brand-primary);
+                box-shadow: 0 0 20px var(--brand-glow);
+            }
+
+            .infra-item.active-selection {
+                border-color: var(--brand-primary);
+                background: #0a1f0a; /* Dark Green Tint */
+                box-shadow: 0 0 0 2px var(--brand-primary);
+            }
+
+        .icon-display {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            color: var(--brand-primary); /* Green Icons */
+        }
+
+        .infra-label {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--text-heading);
+        }
+
+        /* DETAIL PANEL */
+        .detail-panel {
+            display: none;
+            background: var(--bg-surface);
+            padding: 3rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--brand-primary);
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+            .detail-panel.active {
+                display: block;
+                animation: fadeIn 0.5s ease-in-out;
+            }
+
+        .detail-title {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--brand-primary);
+        }
+
+        /* =========================================
+                   COMPONENT: PROJECT CARDS (High Contrast)
+                   ========================================= */
+        .project-card {
+            background: var(--bg-surface);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--bg-accent);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .project-title {
+            font-size: 2rem;
+            color: var(--text-heading);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--bg-accent);
+            padding-bottom: 1rem;
+        }
+
+        .project-description {
+            color: var(--text-body) !important;
+            font-size: 1.1rem;
+            opacity: 1;
+            text-align: left;
+            margin-top: 1rem;
+            font-weight: 400;
+            flex-grow: 1;
+        }
+
+        /* =========================================
+                   COMPONENT: SOCIAL BUTTONS (Brand Colors)
+                   ========================================= */
+        .social-btn {
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            border: none;
+        }
+
+        .btn-green-glow {
+            background-color: transparent;
+            border: 1px solid var(--brand-primary);
+            color: var(--brand-primary);
+        }
+
+            .btn-green-glow:hover {
+                background-color: var(--brand-primary);
+                color: black;
+                box-shadow: 0 0 20px var(--brand-glow);
+            }
+
+        .btn-linkedin {
+            background-color: var(--brand-linkedin);
+        }
+
+            .btn-linkedin:hover {
+                background-color: #006097;
+                color: white;
+            }
+
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+            .btn-instagram:hover {
+                opacity: 0.9;
+                color: white;
+            }
+
+        .btn-github {
+            background-color: #24292e;
+            border: 1px solid #ffffff;
+        }
+
+            .btn-github:hover {
+                background-color: #ffffff;
+                color: black;
+            }
+
+        /* =========================================
+                   COMPONENT: DEEP DIVE STACK
+                   ========================================= */
+        .stack-entry {
+            margin-bottom: 4rem;
+            border-left: 4px solid var(--brand-primary);
+            padding-left: 2.5rem;
+            position: relative;
+        }
+
+        .stack-title {
+            font-size: 2rem;
+            color: var(--text-heading);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Form Inputs Override (Green Focus) */
+        .form-control {
+            background-color: #0f1110;
+            border: 1px solid var(--bg-accent);
+            color: white;
+        }
+
+            .form-control:focus {
+                background-color: #0f1110;
+                color: white;
+                border-color: var(--brand-primary);
+                box-shadow: 0 0 10px var(--brand-glow);
+            }
+
+        /* Animation Fix for Razor Pages */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tech-section">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h6 class="text-uppercase fw-bold mb-3" style="color: var(--brand-primary); letter-spacing: 2px;">
+                    SYSTEMS ONLINE // v2.5.0
+                </h6>
+                <h1 class="display-3 fw-bold mb-2">Alfano Tech Portfolio</h1>
+                <h3 class="mb-4" style="color: #94a3b8; font-weight: 300;">Full Stack Cloud & DevOps Engineer</h3>
+
+                <p class="lead" style="font-size: 1.25rem; max-width: 850px; border-left: 4px solid var(--brand-primary); padding-left: 20px;">
+                    My name is <strong>Antonio Alfano</strong>. Welcome to my technical portfolio.
+                    <br><br>
+                    I didn't just want to tell you I can code. I wanted to actually show you. I built this from the ground up. This is a live environment I engineered using ASP.NET Core SQL Server and Azure to bridge the gap between hardware and software.
+                    <br><br>
+                    I don't just maintain the physical layer I engineer the entire ecosystem from the silicon on the workbench to the cloud infrastructure that manages it.
+                </p>
+
+                <div class="mt-5 d-flex gap-3 flex-wrap">
+                    <button class="social-btn btn-green-glow" onclick="document.getElementById('deep-dive').scrollIntoView({behavior: 'smooth'})">
+                        <i class="bi bi-cpu-fill"></i> Technical Deep Dive
+                    </button>
+                    <a href="https://github.com/AntonioDevTech" target="_blank" class="social-btn btn-github">
+                        <i class="bi bi-github"></i> GitHub
+                    </a>
+                    <a href="http://www.linkedin.com/in/antonio-alfano-273162358" target="_blank" class="social-btn btn-linkedin">
+                        <i class="bi bi-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="https://instagram.com/officialtone_" target="_blank" class="social-btn btn-instagram">
+                        <i class="bi bi-instagram"></i> Instagram
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="card p-4 shadow-lg" style="border-top: 5px solid var(--brand-primary);">
+                    <h4 class="mb-4 text-white">Let's Connect</h4>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label class="small text-secondary fw-bold">NAME</label>
+                            <input type="text" asp-for="Contact.SenderName" class="form-control" placeholder="Enter Name" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-secondary fw-bold">EMAIL</label>
+                            <input type="email" asp-for="Contact.SenderEmail" class="form-control" placeholder="email@domain.com" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-secondary fw-bold">MESSAGE</label>
+                            <textarea asp-for="Contact.MessageBody" class="form-control" rows="3" placeholder="Discuss hardware or software..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn w-100 fw-bold" style="background-color: var(--brand-primary); color: black;">SEND MESSAGE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-section">
+        <h2 class="section-header">Infrastructure & Engineering Toolchain</h2>
+        <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto;">
+            Click a module below to inspect the specific implementation details of this environment.
+        </p>
+
+        <div class="infra-grid">
+            <div class="infra-item" onclick="showDetail('vs', this)">
+                <span class="icon-display">💻</span>
+                <div class="infra-label">Visual Studio 2026</div>
+            </div>
+
+            <div class="infra-item" onclick="showDetail('ssms', this)">
+                <span class="icon-display">🗄️</span>
+                <div class="infra-label">SQL Mgmt Studio</div>
+            </div>
+
+            <div class="infra-item" onclick="showDetail('cloud', this)">
+                <span class="icon-display">☁️</span>
+                <div class="infra-label">Azure DevOps</div>
+            </div>
+        </div>
+
+        <div id="detail-vs" class="detail-panel">
+            <h3 class="detail-title">Development Environment: Visual Studio 2026 Preview</h3>
+            <p class="detail-content">
+                This project was engineered using the cutting-edge VS 2026 ecosystem to utilize advanced <strong>Hot Reload</strong> capabilities for rapid prototyping.
+                I structured the solution architecture following the <strong>Clean Architecture</strong> principle separating the Data Access Layer (DAL) from the Presentation Layer to enforce strict <strong>Separation of Concerns</strong>.
+                Integrated NuGet package management handles dependencies like Entity Framework Core ensuring strict version consistency across local development and production build servers.
+            </p>
+        </div>
+
+        <div id="detail-ssms" class="detail-panel">
+            <h3 class="detail-title">Database Management: SQL Server Management Studio (SSMS)</h3>
+            <p class="detail-content">
+                SSMS is utilized here for advanced query profiling and <strong>Execution Plan analysis</strong>. I use it to identify table scan bottlenecks and author raw T-SQL migration scripts when EF Core migrations require manual intervention.
+                The environment is configured to monitor deadlock graphs and ensure that our stored procedures are optimized for sub-second response times even under concurrent user load. I also manage database schemas through visual diagrams to enforce referential integrity constraints before code generation.
+            </p>
+        </div>
+
+        <div id="detail-cloud" class="detail-panel">
+            <h3 class="detail-title">CI/CD & Cloud Troubleshooting</h3>
+            <p class="detail-content">
+                Deployment is handled via Azure Pipelines (DevOps) but the real engineering challenge was the database connectivity. I hit a persistent <strong>Error 40 / Named Pipes Provider</strong> failure where the app service refused to handshake with the Azure SQL database despite firewall rules being open. After exhaustive root-cause analysis testing connection strings checking port 1433 outbound rules and verifying Entra ID authentication I confirmed it was a platform-level sync issue on the Azure backend. Instead of waiting on support tickets I pivoted to <strong>ngrok</strong> to bypass the cloud network stack entirely. This allowed me to tunnel the local environment directly to the public web and get the site live immediately proving that the code was solid and the issue was purely infrastructural.
+            </p>
+        </div>
+    </div>
+
+    <div class="tech-section">
+        <h2 class="section-header">Project Portfolio Modules</h2>
+
+        <div class="row g-4 justify-content-center">
+
+            <div class="col-lg-6">
+                <div class="project-card h-100">
+                    <div class="project-title">Miner Control Center (MCC)</div>
+                    <div class="mb-3">
+                        <span class="badge bg-success" style="color: black;">C# .NET</span>
+                        <span class="badge bg-secondary">TCP/IP Sockets</span>
+                        <span class="badge bg-light text-dark">Hardware Telemetry</span>
+                    </div>
+                    <p class="project-description">
+                        I designed this program to be a centralized dashboard for high-frequency data aggregation and system monitoring. I built it to eliminate administrative overhead by providing real-time telemetry of system health. I utilized <strong>SignalR</strong> for live bi-directional data pushing ensuring the dashboard reflects state changes within milliseconds. I programmed the application to bypass standard web interfaces by injecting JSON-RPC payloads directly into the miner's API via raw sockets.
+                    </p>
+                    <div class="mt-auto pt-4 d-flex gap-3">
+                        <a href="MCC_App.zip" class="btn btn-outline-light flex-grow-1 fw-bold">
+                            <i class="bi bi-download me-2"></i>Download App
+                        </a>
+                        <button class="btn btn-green-glow flex-grow-1 fw-bold" data-bs-toggle="modal" data-bs-target="#minerModal">
+                            <i class="bi bi-code-slash me-2"></i>How It's Made
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="project-card h-100">
+                    <div class="project-title">Azure & Terraform Automation</div>
+                    <div class="mb-3">
+                        <span class="badge bg-primary">Terraform</span>
+                        <span class="badge bg-info text-dark">Azure Cloud</span>
+                        <span class="badge bg-secondary">IaC</span>
+                    </div>
+                    <p class="project-description">
+                        Engineered a fully automated cloud environment using <strong>Terraform</strong> to define infrastructure as code.
+                        This project demonstrates the ability to spin up complex Azure resources like VNETs and Subnets programmatically ensuring state consistency and eliminating configuration drift.
+                        I utilized <strong>Azure CLI</strong> and <strong>PowerShell</strong> for initial bridging then codified the entire stack to allow for one-click deployment.
+                        <br><br>
+                        <strong style="color: var(--brand-primary)">Programs Used:</strong> VS Code, Terraform, Azure CLI, PowerShell.
+                    </p>
+                    <div class="mt-auto pt-4 d-flex gap-3">
+                        <a href="https://www.linkedin.com/posts/antonio-alfano-273162358_azure-terraform-cloudengineering-activity-7410886557055823872-ONkk?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFkDAPcByUNSKOZg0avlPgaasPI67DE6o7o" target="_blank" class="btn btn-linkedin flex-grow-1 fw-bold">
+                            <i class="bi bi-linkedin me-2"></i>See Project Pics
+                        </a>
+                        <button class="btn btn-green-glow flex-grow-1 fw-bold" data-bs-toggle="modal" data-bs-target="#terraformModal">
+                            <i class="bi bi-code-slash me-2"></i>Workflow Breakdown
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tech-section">
+        <h2 class="section-header">Technical Demonstrations</h2>
+        <div class="row justify-content-center align-items-center">
+            @if (Model.MediaItems != null && Model.MediaItems.Any())
+            {
+                var item = Model.MediaItems.First();
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="card h-100 shadow-sm rounded-3 overflow-hidden border-0" style="border: 1px solid var(--brand-primary) !important;">
+                        <div style="height: 350px; overflow: hidden; background: black;">
+                            <div class="ratio ratio-16x9 h-100">
+                                <a href="@item.MediaUrl" target="_blank" class="d-flex align-items-center justify-content-center h-100 text-decoration-none">
+                                    <i class="bi bi-play-circle-fill" style="font-size: 5rem; color: var(--brand-primary);"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body bg-dark border-top border-secondary text-center">
+                            <h5 class="card-title text-white text-truncate mb-3">@item.Title</h5>
+                            <a href="@item.MediaUrl" target="_blank" class="btn btn-green-glow w-50">
+                                Watch Video
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="p-4" style="color: var(--text-body);">
+                        <h4 class="text-white mb-3" style="border-bottom: 2px solid var(--brand-primary); padding-bottom: 10px; display: inline-block;">On The Job: M50 Microchip Repair</h4>
+                        <p style="font-size: 1.1rem;">
+                            This is my day job here is a short video of me removing a bad microchip and soldering a new working chip on. I was diagnosing a critical hash chain failure on a Whatsminer M50. During signal analysis I traced a break in the circuit continuity to a specific ASIC chip. The diagnostic revealed a fatal anomaly on the CLK line. It was pulling a static 1.8V potential indicating an internal short to the LDO rail when the nominal reference voltage should be 0V. This video demonstrates the precision BGA rework process removing the compromised silicon cleaning the PCB pads and soldering a replacement unit to restore signal integrity and bring the board back to full operational hashrate.
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div id="deep-dive" class="tech-section">
+        <h2 class="section-header">Insight Security: Core Technology Stack</h2>
+        <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto; color: var(--text-body);">
+            A detailed breakdown of the architectural decisions powering this platform.
+        </p>
+
+        <div class="stack-entry">
+            <h3 class="stack-title">SQL Database Architecture</h3>
+            <p class="stack-desc">
+                The persistence layer is engineered using Microsoft SQL Server adhering to strict relational database design principles to ensure data integrity. The schema is normalized to the <strong>Third Normal Form (3NF)</strong> to minimize redundancy while utilizing strategic non-clustered indexes to accelerate lookups on high-traffic columns. I leverage Stored Procedures and parameterized queries exclusively to abstract business logic from the data layer and provide a hard-stop defense against SQL Injection attacks. The database utilizes T-SQL for complex join operations and transaction management ensuring <strong>ACID compliance</strong> (Atomicity, Consistency, Isolation, Durability) across all data mutations.
+            </p>
+        </div>
+
+        <div class="stack-entry">
+            <h3 class="stack-title">C#.NET Core Middleware</h3>
+            <p class="stack-desc">
+                The application core is built on the .NET 8 framework leveraging its cross-platform capabilities and high-performance Kestrel web server. I utilize the built-in <strong>Dependency Injection (DI)</strong> container to manage service lifecycles (Singleton, Scoped, Transient) promoting loose coupling and testability. The architecture implements the Repository Pattern to abstract data access while the business logic relies on asynchronous programming models (<code>async</code>/<code>await</code>) to prevent thread-pool starvation under load. Strong typing and LINQ are used extensively to enforce compile-time safety.
+            </p>
+        </div>
+
+        <div class="stack-entry">
+            <h3 class="stack-title">ASP.NET Razor Pages (SSR)</h3>
+            <p class="stack-desc">
+                The presentation layer utilizes ASP.NET Core Razor Pages a page-focused framework that streamlines the MVVM (Model-View-ViewModel) pattern for web scenarios. Unlike heavy client-side frameworks Razor Pages delivers <strong>Server-Side Rendering (SSR)</strong> ensuring rapid First Contentful Paint (FCP) and superior SEO optimization. I utilize Tag Helpers to create semantic maintainable HTML that binds seamlessly to the backing <code>PageModel</code> classes. The architecture leverages Partial Views for reusable UI components and employs Anti-Forgery Tokens automatically on all form submissions to secure user interactions against CSRF attacks.
+            </p>
+        </div>
+    </div>
+
+    <div class="modal fade" id="minerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg" style="background-color: var(--bg-surface); border: 1px solid var(--brand-primary);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--bg-accent);">
+                    <h5 class="modal-title fw-bold" style="color: var(--brand-primary);">
+                        <i class="bi bi-tools me-2"></i>MinerControlCenter: Technical Breakdown
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <h6 class="fw-bold mb-3" style="color: var(--brand-primary); font-size: 1.1rem;">Core Engineering Walkthrough</h6>
+                    <div style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.6;">
+                        <p>
+                            This isn't a standard web app hitting a nice clean REST API. This is a C# WPF desktop application that has to get its hands dirty talking directly to hardware. I bypassed standard HTTP interfaces entirely because they are too slow for real-time monitoring of large fleets. Instead the app manages asynchronous <code>System.Net.Sockets.TcpClient</code> connections opened directly to port 4028 on every miner on the subnet simultaneously.
+                        </p>
+                        <p>
+                            Once the TCP handshake is fine I have to serialize custom JSON-RPC packets. Literally converting strings like <code>{"command": "stats"}</code> into raw byte arrays and blasting them down the wire. The hardest part is handling the response. ASIC firmware returns massive messy strings of data that are formatted differently depending on if it's an M30s++ an M50 or an Antminer. Standard JSON deserializers choke on it.
+                        </p>
+                        <p>
+                            To fix that I wrote complex compiled Regex patterns to define capture groups for critical data points. The app parses these raw streams in real-time to extract chip temps PCB temps fan duty cycles and MH/s rates. It then normalizes it all into C# objects that the UI can actually bind to. It also includes an async safety loop that monitors those Regex captures. If a hashboard hits 85°C it automatically fires a stop command packet to save the hardware.
+                        </p>
+                    </div>
+                    <div class="row g-3 mt-4">
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-3 h-100" style="background: var(--bg-body); border: 1px solid var(--brand-primary);">
+                                <h6 class="fw-bold mb-2" style="color: white; font-size: 0.9rem;">1. The Protocol (TCP/IP)</h6>
+                                <p class="mb-0" style="color: var(--brand-primary); font-family: monospace; font-size: 0.85rem;">
+                                    Async TcpClient implementation managing persistent socket connections across hundreds of local device IPs without thread-pool starvation.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-3 h-100" style="background: var(--bg-body); border: 1px solid var(--brand-primary);">
+                                <h6 class="fw-bold mb-2" style="color: white; font-size: 0.9rem;">2. The Payload (JSON-RPC)</h6>
+                                <p class="mb-0" style="color: var(--brand-primary); font-family: monospace; font-size: 0.85rem;">
+                                    Custom byte-array serialization of raw JSON-RPC payloads injected directly into the firmware data stream.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-3 h-100" style="background: var(--bg-body); border: 1px solid var(--brand-primary);">
+                                <h6 class="fw-bold mb-2" style="color: white; font-size: 0.9rem;">3. Data Normalization (Regex)</h6>
+                                <p class="mb-0" style="color: var(--brand-primary); font-family: monospace; font-size: 0.85rem;">
+                                    Utilizing compiled Regex engines to scrape and normalize critical metrics from non-standardized raw text returns.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="terraformModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg" style="background-color: var(--bg-surface); border: 1px solid var(--brand-primary);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--bg-accent);">
+                    <h5 class="modal-title fw-bold" style="color: var(--brand-primary);">
+                        <i class="bi bi-cloud-arrow-up-fill me-2"></i>Terraform Workflow: How I Built It
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <h6 class="fw-bold mb-3" style="color: var(--brand-primary); font-size: 1.1rem;">Engineering the Cloud</h6>
+                    <div style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.6;">
+                        <p>
+                            The goal of this project was to move away from "ClickOps" where you manually create resources in the Azure Portal and move toward a reproducible code-defined infrastructure. I utilized <strong>Terraform</strong> (HCL) to script the entire lifecycle of the environment.
+                        </p>
+                        <p>
+                            <strong>1. Initialization & State:</strong> I started by configuring the Terraform Backend to store the state file remotely in an Azure Storage Account container. This ensures that if I run the script from a different machine I'm not overwriting the existing infrastructure which prevents state corruption.
+                        </p>
+                        <p>
+                            <strong>2. Resource Definition:</strong> I wrote modular blocks for the Resource Group Virtual Network (VNET) and Subnets. I implemented <code>azurerm_network_security_group</code> resources to define strict inbound/outbound rules allowing only port 22/80/443 and attached them directly to the subnets.
+                        </p>
+                        <p>
+                            <strong>3. Provisioning:</strong> Using the standard <code>terraform plan</code> and <code>terraform apply</code> workflow I deployed the entire stack in under 3 minutes. This allows me to destroy and recreate the entire environment with a single command which is perfect for testing and cost management.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDetail(id, element) {
+            // 1. Hide all panels first
+            const panels = document.querySelectorAll('.detail-panel');
+            panels.forEach(p => p.classList.remove('active'));
+
+            // 2. Remove active styling from all buttons
+            const buttons = document.querySelectorAll('.infra-item');
+            buttons.forEach(b => b.classList.remove('active-selection'));
+
+            // 3. Show the selected panel
+            const activePanel = document.getElementById('detail-' + id);
+            if (activePanel) {
+                activePanel.classList.add('active');
+            }
+
+            // 4. Highlight the clicked button
+            element.classList.add('active-selection');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
