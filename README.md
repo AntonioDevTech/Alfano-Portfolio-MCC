@@ -9,14 +9,14 @@
 ## 📖 Executive Summary
 This repository contains the source code for two distinct engineering challenges I tackled where I had to bridge the gap between low level hardware control and high level cloud architecture.
 
-First is the **Miner Control Center (MCC)** where I had to build a desktop telemetry engine designed for high frequency ASIC hardware management. The challenge was that standard web interfaces are too slow for real time monitoring so I had to reverse engineer the hardware protocols to get the speed I needed.
+First is the **Miner Control Center (MCC)**. I built a desktop telemetry engine designed to manage a mixed fleet of **Whatsminer and Antminer ASICs**. The challenge was that standard web interfaces are too slow for real time monitoring of different brands simultaneously so I had to reverse engineer the hardware protocols to get them all talking to one dashboard.
 
 Second is the **Full-Stack Cloud Portfolio** which is a cloud native web application. I didn't want a basic setup so I used Terraform to automate the infrastructure on Azure and had to engineer a custom tunnel solution to get my local development environment talking to the cloud database securely.
 
 ---
 
 ## 🏗️ Architecture Diagram
-The diagram below illustrates the dual nature of this repository. It visualizes how the MCC bypasses standard HTTP protocols to speak raw TCP directly to the hardware for speed, and how the Web Portfolio utilizes a secure Ngrok tunnel to bridge local development with enterprise Azure resources.
+The diagram below illustrates the dual nature of this repository. It visualizes how the MCC bypasses standard HTTP protocols to speak raw TCP directly to both Whatsminer and Antminer hardware, and how the Web Portfolio utilizes a secure Ngrok tunnel to bridge local development with enterprise Azure resources.
 
 ```mermaid
 graph TD
@@ -55,8 +55,8 @@ graph TD
     TCPSocket --"Polls Telemetry (500ms)"--> Antminer
     
     %% 2. Parsing & Safety
-    Whatsminer --"Raw Firmware Data"--> Regex
-    Antminer --"Raw Firmware Data"--> Regex
+    Whatsminer --"Raw Firmware Data (JSON)"--> Regex
+    Antminer --"Raw Firmware Data (String)"--> Regex
     Regex --"Structured Telemetry"--> SafetyLoop
     SafetyLoop --"Kill Command (>85°C)"--> TCPSocket
 
