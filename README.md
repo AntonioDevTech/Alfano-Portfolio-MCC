@@ -7,16 +7,16 @@
 ---
 
 ## 📖 Executive Summary
-This repository houses the full source code for two production-grade engineering projects:
-1.  **The Miner Control Center (MCC):** A desktop telemetry engine designed for high-frequency ASIC hardware management.
-2.  **Full-Stack Cloud Portfolio:** A cloud-native .NET 8 web application orchestrated via Terraform.
+This repository contains the source code for two distinct engineering challenges I tackled where I had to bridge the gap between low level hardware control and high level cloud architecture.
 
-**Status Update:** After successfully troubleshooting a critical SQL connectivity blockage ("Error 40"), the cloud portfolio was successfully deployed and is now **active and live at [titanalfapro.org](https://titanalfapro.org)**.
+First is the **Miner Control Center (MCC)** where I had to build a desktop telemetry engine designed for high frequency ASIC hardware management. The challenge was that standard web interfaces are too slow for real time monitoring so I had to reverse engineer the hardware protocols to get the speed I needed.
+
+Second is the **Full-Stack Cloud Portfolio** which is a cloud native web application. I didn't want a basic setup so I used Terraform to automate the infrastructure on Azure and had to engineer a custom tunnel solution to get my local development environment talking to the cloud database securely.
 
 ---
 
 ## 🏗️ Architecture Diagram
-The diagram below illustrates the dual-nature of this repository. It visualizes how the **MCC** bypasses HTTP to speak raw TCP to hardware, and how the **Web Portfolio** utilizes a secure Ngrok tunnel to bridge local development with enterprise Azure resources.
+The diagram below illustrates the dual nature of this repository. It visualizes how the MCC bypasses standard HTTP protocols to speak raw TCP directly to the hardware for speed, and how the Web Portfolio utilizes a secure Ngrok tunnel to bridge local development with enterprise Azure resources.
 
 ```mermaid
 graph TD
@@ -63,7 +63,6 @@ graph TD
     %% 3. Web & Cloud Data
     WebApp --"Entity Framework Core"--> Ngrok
     Ngrok --"Bypasses Firewall (Error 40)"--> AzureSQL
-    WebApp --"Deploys To"--> LiveSite["🌍 titanalfapro.org"]:::external
 
     %% --- APPLY STYLES ---
     class Whatsminer,Antminer hardware;
